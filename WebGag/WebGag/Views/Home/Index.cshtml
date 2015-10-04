@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>Colman Gag!</h1>
+    <p class="lead">This is the funniest website ever made for colman, by Raz Abadi</p>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <h2>Trending Gags</h2>
+        <p>
+            There you will find the newest gags at the site!
+        </p>
+        <p>@Html.ActionLink("Trending", "Index", "Gag")</p>
+    </div>
+    <div class="col-md-3">
+        <h2>Hot Gags</h2>
+        <p>
+            There you will find the hotest gags at the site! ordered by time...
+        </p>
+        <p>@Html.ActionLink("Hot", "Index", "Gag", new { isHot = true })</p>
+    </div>
+    <div class="col-md-3">
+        <h2>Upload!</h2>
+        <p>
+            Do you have funny idea? Are you think you can be the next Eddy Murphy?
+            Here you can upload your own gag!
+        </p>
+        <p>@Html.ActionLink("Upload!", "Index", "Upload")</p>
+    </div>
+    <div class="col-md-3">
+        <h2>Statistics</h2>
+        <p>
+            This is all about the stats, 70% of all the stats in this site are fake.<br />
+            Just kidding, but there is in here some nice stats...
+        </p>
+        <p>@Html.ActionLink("Stats", "Index", "Stats")</p>
+    </div>
+</div>

@@ -1,0 +1,278 @@
+﻿
+@{
+    ViewBag.Title = "Stats";
+}
+<style>
+    text {
+        font: 15px sans-serif;
+    }
+</style>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+<script type="text/javascript">
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF'.split('');
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+    function createMostFunnyUsers() {
+        //load data
+        d3.json("/Stats/MostFunnyUsers", function (error, root) { 
+            var diameter = 400,
+                format = d3.format(",d"),
+                color = d3.scale.category20c();
+
+            var bubble = d3.layout.pack()
+                .sort(null)
+                .size([diameter, diameter])
+                .padding(1.5);
+
+            var svg = d3.select("#container1").append("svg")
+                .attr("width", diameter)
+                .attr("height", diameter)
+                .attr("class", "bubble");
+
+            var node = svg.selectAll(".node")
+                .data(bubble.nodes(classes({ Children: root }))
+                .filter(function (d) { return !d.children; }))
+              .enter().append("g")
+                .attr("class", "node")
+                .attr("transform", function(d) {
+                    return "translate(" + d.x + "," + d.y + ")"; 
+                });
+
+            node.append("title")
+                .text(function (d) {
+                    return d.packageName + ": " + format(d.value);
+                });
+
+            node.append("circle")
+                .attr("r", function(d) { return d.r; })
+                .style("fill", function(d) { 
+                    return color(d.packageName);
+                });
+
+            node.append("text")
+                .attr("dy", ".3em")
+                .style("text-anchor", "middle")
+                .text(function (d) {
+                    if (d.packageName) {
+                        return d.packageName.substring(0, d.r / 5);
+                    }
+                    else {
+                        return d.children[0].packageName.substring(0, d.r / 3);
+                    }
+                });
+
+
+            // Returns a flattened hierarchy containing all leaf nodes under the root.
+            function classes(root) {
+                var classes = [];
+
+                function recurse(name, node) {
+                    if (node.Children) {
+                        node.Children.forEach(function (child) {
+                            recurse(node.Name, child);
+                        });
+                    }
+                    else {
+                        classes.push({ packageName: node.Name, className: node.Name, value: node.Value });
+                    }
+                }
+
+                recurse(null, root);
+                return {children: classes};
+            }
+
+            d3.select(self.frameElement).style("height", diameter + "px");
+        });
+    }
+
+    function createTheMostLikeGags() {
+        //load data
+        d3.json("/Stats/TheMostLikeGags", function (error, root) {
+            var diameter = 400,
+                format = d3.format(",d"),
+                color = d3.scale.category20c();
+
+            var bubble = d3.layout.pack()
+                .sort(null)
+                .size([diameter, diameter])
+                .padding(1.5);
+
+            var svg = d3.select("#container2").append("svg")
+                .attr("width", diameter)
+                .attr("height", diameter)
+                .attr("class", "bubble");
+
+            var node = svg.selectAll(".node")
+                .data(bubble.nodes(classes({ Children: root }))
+                .filter(function (d) { return !d.children; }))
+              .enter().append("g")
+                .attr("class", "node")
+                .attr("transform", function (d) {
+                    return "translate(" + d.x + "," + d.y + ")";
+                });
+
+            node.append("title")
+                .text(function (d) {
+                    return d.packageName + ": " + format(d.value);
+                });
+
+            node.append("circle")
+                .attr("r", function (d) { return d.r; })
+                .style("fill", function (d) {
+                    return color(d.packageName);
+                });
+
+            node.append("text")
+                .attr("dy", ".3em")
+                .style("text-anchor", "middle")
+                .text(function (d) {
+                    if (d.packageName) {
+                        return d.packageName.substring(0, d.r / 5);
+                    }
+                    else {
+                        return d.children[0].packageName.substring(0, d.r / 3);
+                    }
+                });
+
+
+            // Returns a flattened hierarchy containing all leaf nodes under the root.
+            function classes(root) {
+                var classes = [];
+
+                function recurse(name, node) {
+                    if (node.Children) {
+                        node.Children.forEach(function (child) {
+                            recurse(node.Name, child);
+                        });
+                    }
+                    else {
+                        classes.push({ packageName: node.Name, className: node.Name, value: node.Value });
+                    }
+                }
+
+                recurse(null, root);
+                return { children: classes };
+            }
+
+            d3.select(self.frameElement).style("height", diameter + "px");
+        });
+    }
+
+    function createTheMostActiveUser() {
+        //load data
+        d3.json("/Stats/TheMostActiveUser", function (error, root) {
+            var diameter = 800,
+                format = d3.format(",d"),
+                color = d3.scale.category20c();
+
+            var bubble = d3.layout.pack()
+                .sort(null)
+                .size([diameter, diameter])
+                .padding(1.5);
+
+            var svg = d3.select("#container3").append("svg")
+                .attr("width", diameter)
+                .attr("height", diameter)
+                .attr("class", "bubble");
+
+            var node = svg.selectAll(".node")
+                .data(bubble.nodes(classes({ Children: root }))
+                .filter(function (d) { return !d.children; }))
+              .enter().append("g")
+                .attr("class", "node")
+                .attr("transform", function (d) {
+                    return "translate(" + d.x + "," + d.y + ")";
+                });
+
+            node.append("title")
+                .text(function (d) {
+                    return d.packageName + ": " + format(d.value);
+                });
+
+            node.append("circle")
+                .attr("r", function (d) { return d.r; })
+                .style("fill", function (d) {
+                    return color(d.packageName);
+                });
+
+            node.append("text")
+                .attr("dy", ".3em")
+                .style("text-anchor", "middle")
+                .text(function (d) {
+                    if (d.packageName) {
+                        return d.packageName.substring(0, d.r / 5);
+                    }
+                    else {
+                        return d.children[0].packageName.substring(0, d.r / 3);
+                    }
+                });
+
+
+            // Returns a flattened hierarchy containing all leaf nodes under the root.
+            function classes(root) {
+                var classes = [];
+
+                function recurse(name, node) {
+                    if (node.Children) {
+                        node.Children.forEach(function (child) {
+                            recurse(node.Name, child);
+                        });
+                    }
+                    else {
+                        classes.push({ packageName: node.Name, className: node.Name, value: node.Value });
+                    }
+                }
+
+                recurse(null, root);
+                return { children: classes };
+            }
+
+            d3.select(self.frameElement).style("height", diameter + "px");
+        });
+    }
+    setTimeout(function(){
+        createMostFunnyUsers();
+        createTheMostLikeGags();
+        createTheMostActiveUser();
+    },1);
+</script>
+<header>
+    <h2>Because it all about the stats</h2>
+</header>
+<section class="col-md-6">
+    <header>
+        <h3>10 Most Funniest Users</h3>
+        <h4>The users that uploaded the most liked gags!</h4>     
+        <hr />   
+    </header>
+    <section>
+        <div id="container1"></div>
+    </section>
+</section>
+<section class="col-md-6">
+    <header>
+        <h3>10 Most Liked gag!</h3>
+        <h4>The most liked gags!</h4>
+        <hr />
+    </header>
+    <section>
+        <div id="container2"></div>
+    </section>
+</section>
+<section class="col-md-12">
+    <header>
+        <h3>10 The Most Active Users</h3>
+        <h4>Users that commited, uploaded and likes</h4>
+        <hr />
+    </header>
+    <section>
+        <div id="container3"></div>
+    </section>
+</section>
+<footer><h2>That is all for now</h2></footer>
+

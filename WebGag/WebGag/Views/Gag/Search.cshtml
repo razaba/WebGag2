@@ -1,0 +1,286 @@
+﻿
+@{
+    
+        ViewBag.Title = "Search!";
+   
+}
+<style>
+    .glyphicon-refresh-animate {
+        -animation: spin .7s infinite linear;
+        -webkit-animation: spin2 .7s infinite linear;
+    }
+
+@Html.Raw("@");-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+@Html.Raw("@")keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+</style>
+<script type="text/javascript">
+    function like(id, liked) {
+        if (liked)
+            return;
+
+        $.get('@Url.Action("Like","Gag")', { id: id }, function (result, status, jq) {
+            var likes = parseInt(result);
+            if (!isNaN(likes)) {
+                $("#" + id).html('Like(' + result + ')');
+            }
+            else {
+                $(".modal-title").html(result);
+                $('#messegingModal').modal('show');
+            }
+        })
+    };
+
+    function toggleComment(id) {
+        $("#" + id).toggle();
+    }
+</script>
+<script type="text/javascript">
+    function deleteModel(id) {
+        $('#gagToDelete').val(id);
+        $('#confirm').modal('show');
+    }
+    function deleteGag() {
+        var id = $('#gagToDelete').val();
+        jQuery.get('/Gag/Delete/' + id, function (data) {
+            if (data) {
+                alert("Gag was deleted, shame on you!");
+            }
+            else {
+                alert('Gag was Not deleted, thank GOD!');
+            }
+            location.reload();
+        });
+    }
+    function loadMore(uri){
+        console.log(location.herf);
+        console.log(uri);
+        location.replace(location.origin + uri);
+    }
+    function addComment(gagId) {
+        var desc = $('#' + gagId + 'description').val();
+        if (!desc)
+            return;
+        jQuery.post('@Url.Action("AddComment","Comment")',
+            { GagId: gagId, Description: desc },
+            function (data, status) {
+                var html = [];
+                html.push("<div class=\"actionBox\"><ul class=\"commentList\">");
+                for (var commentId in data.Comments) {
+                    var date = new Date(parseInt(data.Comments[commentId].Date.replace("/Date(", "").replace(")/", ""), 10));
+
+                    html.push("<li><div class=\"commentText\">")
+                    html.push("<label>" + data.Comments[commentId].Description + "</label>");
+                    html.push("<p class=\"sub-text\">by:" + data.Comments[commentId].Owner.Nickname + "   at:" + date.toDateString() + "</p>");
+                    html.push("</div></li>");
+                }
+                html.push("</ul><div class=\"form-inline\" role=\"form\"><div class=\"form-group\"><input class=\"form-control\" type=\"text\" placeholder=\"Your comments\"");
+                html.push("id=" + data.GagId + "description\" name=\"Description\" pattern=\".{4,}\"   required title=\"at least 4 letters\" /></div><div class=\"form-group\">");
+                html.push("<button class=\"btn btn-default\" onclick=\"addComment(" + data.GagId + ")\">Add</button></div></div></div>");
+                $('#' + gagId + 'comments').html(html.join(""))
+            });
+    }
+</script>
+<script type="text/javascript">
+    window.addEventListener("DOMContentLoaded", function () {
+        var video = document.getElementById("video"),
+            videoObj = { "video": true },
+            errBack = function (error) {
+                $(".dontHaveCamera").toggle();
+                console.log("Video capture error: ", error.code);
+            };
+
+        // Put video listeners into place
+        if (navigator.getUserMedia) { // Standard
+            navigator.getUserMedia(videoObj, function (stream) {
+                video.src = stream;
+                video.play();
+            }, errBack);
+        } else if (navigator.webkitGetUserMedia) { // WebKit-prefixed
+            navigator.webkitGetUserMedia(videoObj, function (stream) {
+                video.src = window.webkitURL.createObjectURL(stream);
+                video.play();
+            }, errBack);
+        }
+        else if (navigator.mozGetUserMedia) { // Firefox-prefixed
+            navigator.mozGetUserMedia(videoObj, function (stream) {
+                video.src = window.URL.createObjectURL(stream);
+                video.play();
+            }, errBack);
+        }
+    });
+</script>
+<script>
+    function loadWeather() {
+        $("#weather").html("<span class=\"glyphicon glyphicon-refresh glyphicon-refresh-animate\"></span> Loading how gloomy you are!");
+        setTimeout(
+        function () {
+            $.get('https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22rishon%2C%20isr%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys', undefined, function (data) {
+                var desc = data.query.results.channel.item.condition.text;
+                $("#weather").html("<h5>" + desc + "</h5><button onclick=\"loadWeather()\" class=\"btn btn-lg btn-warning\"><span class=\"glyphicon glyphicon-refresh\"></span> Reload yout forecast</button><br><small>powered by Yahoo!</small>");
+            })
+        }, 2000)
+    }
+    setTimeout(loadWeather);
+
+</script>
+
+<div class="container-fluid">
+    @{
+            <h2 class="nav-header">Search: @ViewBag.text</h2>
+        
+    }
+</div>
+@if (Model != null)
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                @foreach (var gag in Model)
+                {
+                    <hr />
+                    <div class="col-centered">
+                        <div style="margin-bottom:3px; width:100%;">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h3>@gag.Title</h3>
+                                </div>
+                                <div class="col-md-3" style="margin-top:26px;"> by @gag.Owner.Nickname</div>
+                                @if (@User.IsInRole("Admin"))
+                                {
+                                    <div class="col-md-1">
+                                        <button class="btn btn-danger" onclick="deleteModel('@gag.Id')"><i class="glyphicon glyphicon-remove"></i></button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div>
+                                @if (@gag.MediaType == WebGag.DBContext.MediaType.PICTURE)
+                                {
+                                    <img src="@Url.Content(@gag.Url)" style="width:100%" />
+                                }
+                                @if (@gag.MediaType == WebGag.DBContext.MediaType.VIDEO)
+                                {
+                                    <video controls style="width:100%">
+                                        <source src="@Url.Content(@gag.Url)" type="video/mp4">
+                                    </video>
+                                }
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-10" style="margin-top:4px">
+                                <div class="form-group">
+                                    <div class="titleBox">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label style="padding-top:2px">
+                                                    Comments @if (gag.Comment > 0)
+                                                    { @Html.Raw("(" + @gag.Comment + ")")}
+                                                </label>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="close" onclick="toggleComment('@Html.Raw(@gag.Id + "comment")')"><span class="glyphicon glyphicon-eye-open"></span></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="detailBox" style="display:none;" id="@Html.Raw(@gag.Id + "comment")">
+                                        @{ Html.RenderAction("Index", "Comment", new { id = gag.Id }); }
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div onclick="like('@gag.Id', @if (gag.Liked) { @Html.Raw("true"); } else { @Html.Raw("false")})" class="btn">
+
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div id="@gag.Id" style="padding-top:2px">
+                                                @if (@gag.Liked)
+                                                {
+                                                    @Html.Raw("Liked(" + gag.Likes + ")");
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw("Like");
+                                                    if (gag.Likes > 0)
+                                                    {
+                                                        @Html.Raw("(" + gag.Likes + ")");
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                                            }
+            </div>
+            <div class="clo-md-4" style="position:fixed;right:0; padding:10px; margin-left: 5px;max-width: 300px;">
+                <h3 class="dontHaveCamera">Your reaction to funny shit!</h3>
+                <h3 class="dontHaveCamera" style="display:none;">Extra fun when you have a camera!</h3>
+                <img class="dontHaveCamera" style="display:none;width: 80%;" src="@Url.Content("~/Content/webcam.png")" />
+                <video class="dontHaveCamera" id="video" autoplay style="width: 80%;"></video>
+                <div>
+                    <h3>The forecast for you to be funny:</h3>
+                    <div id="weather"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+        if (Model!= null && Model.Count >= 10)
+        {
+            <div class="btn btn-info btn-lg" onclick="loadMore('/Gag/Search?text=@Html.Raw(ViewBag.text)&amp;page=@Html.Raw((ViewBag.page + 1))')" style="height:40px;padding: 3px;width: 70%;Border-radius: 10px;background-color: #808080;">
+                <a href="/Gag/Search?text=@Html.Raw(ViewBag.text)&amp;page=@Html.Raw((ViewBag.page + 1))" style="font-size: large; color:#ffffff">Load More</a>
+            </div>
+        }
+    }
+    else
+    {
+                                                <h3>There are no gag to display :(</h3>
+                                            }
+<div id="confirm" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <input type="hidden" id="gagToDelete" />
+            <div class="modal-body">
+                Are you sure?
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" onclick="deleteGag()" class="btn btn-primary" id="delete">Delete</button>
+                <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="messegingModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modal Header</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>

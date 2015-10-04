@@ -1,0 +1,95 @@
+﻿
+@{
+    ViewBag.Title = "About Me";
+}
+<style>
+    .newspaper {
+        -webkit-column-count: 2; /* Chrome, Safari, Opera */
+        -moz-column-count: 2; /* Firefox */
+        column-count: 2;
+    }
+    #profileImage {
+        height: 350px;
+        -webkit-transition: height 2s; /* Safari */
+        transition: height 2s;
+    }
+    #profileImage:hover {
+        height: 470px;
+    }
+</style>
+
+<header class="row">
+    <h2>Raz Abadi</h2>
+    <small> ID: 302219670</small>
+</header>
+<hr />
+<sction class="row">
+    <aside class="col-md-3">
+        <img id="profileImage" src="@Url.Content("~/Content/razabadi.jpg")" />
+    </aside>
+    <section class="col-md-8" style="margin-left:10px;">
+        <section class="row">
+            <h3>In General:</h3>
+            <ul>
+                <li>Graduate of IDFs Programming course (MAMRAM).</li>
+                <li>Specialist in Elasticsearch, .NET, GIS and system integration.</li>
+                <li> Have hands-on experience using NoSQL (RavenDB, MongoDB, Spark) and Node.js.</li>
+                <li>A self-learner with high curiosity and desire to tackle new challenges and technologies.</li>
+                <li>High abilities as a team player, multitasking skills and capability of working under pressure and tight schedules.</li>
+            </ul>
+        </section>
+        <section class="row">
+            <h3>Professional Experience:</h3>
+            <div class="newspaper">
+                <h4>
+                    Mid 2015: Senior Developer and R&D Team Leader.
+                </h4>
+                <ul>
+                    <li>Design and development of Big Data algorithms over Spark and Elasticsearch.</li>
+                    <li> and deployment of the Intelligence Forces Big Data infrastructure.</li>
+                    <li>Design and development of a POC of a new groundbreaking application in the Intelligence Forces, that utilizing MEAN stack.</li>
+                </ul>
+                <h4>
+                    2013 – 2015: R&D Team Leader of a Google Earth based application.
+                </h4>
+                <ul>
+                    <li> Redesign of the Database and the Data Access Layer of an application that will use Big Data solutions and provide responses at near real time.</li>
+                    <li>
+                        Redesign the flow a vectored data web service to improve performance under heavy load.
+                    </li>
+                    <li> Load testing and performance analytics.</li>
+                </ul>
+                <h4>
+                    2012 – 2013: Team leader of GIS Data Analysis Application.
+                </h4>
+                <ul>
+                    <li> Management of a team of 7 developers using Agile methodologies.</li>
+                    <li>
+                        Development of the server and client using WCF, WPF and Google earth.
+                    </li>
+                    <li>
+                        Integration with other applications using REST services and other architectures.
+                    </li>
+                    <li> Development of web based geographic information system.</li>
+                </ul>
+                <h4>
+                    2009 – 2012: Software Developer.
+                </h4>
+                <ul>
+                    <li>Integration and modification of an open source module, DeepEarth.</li>
+                    <li>
+                        Development of the backend services using WCF and Entity Framework.
+                    </li>
+                    <li>Development client side using Silverlight(.NET).</li>
+                </ul>
+            </div>
+            <footer class="row">
+                <h3>Languages:</h3> Hebrew: native, English: fluent.
+            </footer>
+        </section>
+
+    </section>
+</sction>
+
+
+

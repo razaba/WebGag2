@@ -1,0 +1,58 @@
+﻿@model WebGag.Models.UploadGagViewModel
+
+@{
+    ViewBag.Title = "Upload!";
+}
+
+<h2>Upload new gag!</h2>
+
+
+
+@using (Html.BeginForm("Index", "Upload", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Here you can upload your Gag and share it with your friends</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Media" class="control-label col-md-2">Content</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Media, new { type = "file", @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Upload!" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+
+}
+@if (ViewBag.Message != null)
+{
+    <h3 class="alert alert-info" id="messeging">@ViewBag.Message</h3>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+

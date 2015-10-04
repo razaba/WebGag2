@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Colman Gag!</title>
+    <link rel="shortcut icon" href="/Content/nirvana.png">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <style>
+    @Html.Raw(" @font-face { font-family: Content/footerFont; src: url(sansation_light.woff); }");
+    </style>
+
+</head>
+
+<body>
+    <script type="text/javascript">
+        function toggleModel() {
+            $("#AdvanceSearch").modal('show');
+        }
+    </script>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                
+                <img src="/Content/nirvana.png" class="btn" onclick="location.replace(location.origin)" style="height: 40px;margin: 5px;float:left" />
+                @Html.ActionLink("Colman Gag!", "Index", "Home", new { area = "" }, new { @class = "navbar-brand", @style = "text-shadow: 2px 2px #BDBDBD;" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="col-sm-5 nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li>@Html.ActionLink("Trending", "Index", "Gag")</li>
+                    <li>@Html.ActionLink("Hot", "Index", "Gag", new { isHot = true, page = 1 }, null)</li>
+                    <li>@Html.ActionLink("Stats", "Index", "Stats")</li>
+                    <li>@Html.ActionLink("Upload", "Index", "Upload")</li>
+                    <li>@Html.ActionLink("About", "Index", "About")</li>
+                </ul>
+                <div class="col-sm-3">                    
+                    <form class="navbar-form" role="search" action="/Gag/Search">
+                        <div class="input-group">      
+                            <div class="input-group-btn btn btn-default" onclick="toggleModel()">
+                                <i class="glyphicon glyphicon-chevron-down"></i>
+                            </div>                      
+                            <input type="text" class="form-control" placeholder="Search" name="text" id="text">
+                            <input type="hidden" class="form-control" placeholder="Search" name="Gags" value="true" id="text">
+                            <input type="hidden" class="form-control" placeholder="Search" name="Comments" value="true" id="text">
+                            <input type="hidden" class="form-control" placeholder="Search" name="Commentiers" value="true" id="text">
+                            <input type="hidden" class="form-control" placeholder="Search" name="Owner" value="true" id="text">
+                            <div class="input-group-btn">
+                                <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer style="font-family:footerFont">
+            <p>&copy; @DateTime.Now.Year - Colman Gag!</p>
+        </footer>
+    </div>
+    <div id="AdvanceSearch" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Advance Search</h4>
+                </div>
+                <form class="navbar-form" role="search" action="/Gag/Search">
+                    <div class="input-group">
+                        <label for="text"> Phrase: </label>
+                        <input type="text" class="form-control" placeholder="Search" name="text" id="text">
+                    </div>
+                    <div class="input-group">
+                        <label>Search in:</label><br />
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="Gags" value="True" checked>Gags</label>
+                        </div><br />
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="Comments" value="True" checked>Comments</label>
+                        </div><br />
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="Commentiers" value="True" checked>Commentiers</label>
+                        </div><br />
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="Owner" value="True" checked>Gag Owners</label>
+                        </div>
+                    </div>
+                    <input type="hidden" name="page" value="1" />
+                    <p>
+                        <div class="btn">
+                            <button class="btn-primary" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </p>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

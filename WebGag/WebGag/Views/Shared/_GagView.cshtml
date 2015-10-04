@@ -1,0 +1,30 @@
+﻿@model Model
+
+<div>
+    <h3>Model.Title</h3>
+    <div>
+        @if (Model.MediaType == ColmanGag.DBContext.MediaType.PICTURE)
+        {
+            <img src="@Url.Content(Model.Url)" />
+        }
+        @if (Model.MediaType == ColmanGag.DBContext.MediaType.VIDEO)
+        {
+            <video controls>
+                <source src="@Url.Content(Model.Url)" type="video/mp4">
+            </video>
+        }
+    </div>
+    <p>
+        <div onclick="likeClicked('@Model.Id')" class="btn">
+            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+            Like
+            @if (Model.Likes > 0)
+            {
+                @Html.Raw("(");
+                @Model.Likes
+                @Html.Raw(")");
+            }
+        </div>
+    </p>
+
+</div>
